@@ -10,7 +10,6 @@ public class HumorousBlogApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(HumorousBlogApplication.class, args);
 		System.out.println("project run");
-//27. @UniqueEmail (Spring)  dk 11:00
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.alisimsek.HumorousBlog.exception;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,10 +14,11 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(value = JsonInclude.Include.NON_NULL) //response'da json a dönerken null olmayan alanları dönecek, null değerler gösterilmeyecek
 public class ApiError {
     private Integer statusCode;
     private String message;
     private String path;
     private Long occurrenceDate = new Date().getTime();
-    private Map<String,String> valiadationErrors = new HashMap<>();
+    private Map<String,String> valiadationErrors = null;
 }

@@ -1,11 +1,17 @@
 package com.alisimsek.HumorousBlog.controller;
 
+import com.alisimsek.HumorousBlog.dto.UserCreateDto;
 import com.alisimsek.HumorousBlog.entity.User;
+import com.alisimsek.HumorousBlog.exception.ActivationNotificationException;
 import com.alisimsek.HumorousBlog.exception.ApiError;
 import com.alisimsek.HumorousBlog.exception.NotUniqueMailException;
 import com.alisimsek.HumorousBlog.service.UserService;
+import com.alisimsek.HumorousBlog.shared.Messages;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -21,11 +27,15 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
+    //private final MessageSource messageSource;
 
     @PostMapping
-    public ResponseEntity<?> createUser (@Valid @RequestBody User user){
-        User createdUser = userService.createUser(user);
+    public ResponseEntity<?> createUser (@Valid @RequestBody UserCreateDto userCreateDto){
+        System.err.println("----" + LocaleContextHolder.getLocale().getLanguage());
+        User createdUser = userService.createUser(userCreateDto);
         if (createdUser !=null){
+            String message = Messages.getMessageForLocale("humorous.create.user.success.message", LocaleContextHolder.getLocale());
+            System.out.println(message);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
         }
         else {
@@ -38,7 +48,8 @@ public class UserController {
     ResponseEntity<ApiError> handleMethodArgNotValidEx(MethodArgumentNotValidException exception){
         ApiError apiError = new ApiError();
         apiError.setPath("api/v1/user");
-        apiError.setMessage("Validation error");
+        String message = Messages.getMessageForLocale("humorous.error.validation", LocaleContextHolder.getLocale());
+        apiError.setMessage(message);
         apiError.setStatusCode(400);
         var validationErrors = exception.getBindingResult().getFieldErrors().stream().
                 collect(Collectors.toMap(FieldError::getField,FieldError::getDefaultMessage, (existing, replacing) -> existing));
@@ -50,11 +61,18 @@ public class UserController {
     ResponseEntity<ApiError> handleUniqueMailEx(NotUniqueMailException exception){
         ApiError apiError = new ApiError();
         apiError.setPath("api/v1/user");
-        apiError.setMessage("Validation error");
+        apiError.setMessage(exception.getMessage());
         apiError.setStatusCode(400);
-        Map<String,String> validationErrors = new HashMap<>();
-        validationErrors.put("mail","Mail in use");
-        apiError.setValiadationErrors(validationErrors);
-        return ResponseEntity.badRequest().body(apiError);
+        apiError.setValiadationErrors(exception.getValidationErrors());
+        return ResponseEntity.status(400).body(apiError);
+    }
+
+    @ExceptionHandler(ActivationNotificationException.class)
+    ResponseEntity<ApiError> handleActivationNotificationException(ActivationNotificationException exception){
+        ApiError apiError = new ApiError();
+        apiError.setPath("api/v1/user");
+        apiError.setMessage(exception.getMessage());
+        apiError.setStatusCode(502);
+        return ResponseEntity.status(502).body(apiError);
     }
 }

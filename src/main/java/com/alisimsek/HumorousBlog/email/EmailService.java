@@ -25,9 +25,6 @@ public class EmailService {
         mailSender.setHost(humorousProperties.getEmail().host());
         mailSender.setPort(587);
         mailSender.setUsername(humorousProperties.getEmail().username());
-        System.out.println("-----------");
-        System.out.println(humorousProperties.getEmail().password());
-        System.out.println("-----------");
         mailSender.setPassword(humorousProperties.getEmail().password());
 
         Properties properties = mailSender.getJavaMailProperties();

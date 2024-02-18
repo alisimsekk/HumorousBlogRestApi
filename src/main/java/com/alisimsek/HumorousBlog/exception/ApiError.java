@@ -20,5 +20,5 @@ public class ApiError {
     private String message;
     private String path;
     private Long occurrenceDate = new Date().getTime();
-    private Map<String,String> valiadationErrors = null;
+    private Map<String,String> validationErrors = null;
 }

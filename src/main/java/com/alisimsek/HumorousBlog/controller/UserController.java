@@ -57,7 +57,7 @@ public class UserController {
         apiError.setStatusCode(400);
         var validationErrors = exception.getBindingResult().getFieldErrors().stream().
                 collect(Collectors.toMap(FieldError::getField,FieldError::getDefaultMessage, (existing, replacing) -> existing));
-        apiError.setValiadationErrors(validationErrors);
+        apiError.setValidationErrors(validationErrors);
         return ResponseEntity.badRequest().body(apiError);
     }
 
@@ -67,7 +67,7 @@ public class UserController {
         apiError.setPath("api/v1/user");
         apiError.setMessage(exception.getMessage());
         apiError.setStatusCode(400);
-        apiError.setValiadationErrors(exception.getValidationErrors());
+        apiError.setValidationErrors(exception.getValidationErrors());
         return ResponseEntity.status(400).body(apiError);
     }
 

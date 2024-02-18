@@ -4,6 +4,7 @@ import com.alisimsek.HumorousBlog.dto.UserCreateDto;
 import com.alisimsek.HumorousBlog.email.EmailService;
 import com.alisimsek.HumorousBlog.entity.User;
 import com.alisimsek.HumorousBlog.exception.ActivationNotificationException;
+import com.alisimsek.HumorousBlog.exception.InvalidTokenException;
 import com.alisimsek.HumorousBlog.exception.NotUniqueMailException;
 import com.alisimsek.HumorousBlog.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -37,4 +38,13 @@ public class UserService {
         }
     }
 
+    public void activateUser(String token) {
+        User userFromDbByToken = userRepository.findByactivationToken(token);
+        if (userFromDbByToken == null){
+            throw new InvalidTokenException();
+        }
+        userFromDbByToken.setActive(true);
+        userFromDbByToken.setActivationToken(null);
+        userRepository.save(userFromDbByToken);
+    }
 }

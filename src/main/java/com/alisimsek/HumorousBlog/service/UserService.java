@@ -10,9 +10,12 @@ import com.alisimsek.HumorousBlog.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.UUID;
 
 @Service
@@ -21,6 +24,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+
+    public Page<User> findAllUsers(Pageable page) {
+        return userRepository.findAll(page);
+    }
 
     @Transactional(rollbackOn = MailException.class )
     public User createUser(UserCreateDto userCreateDto) {

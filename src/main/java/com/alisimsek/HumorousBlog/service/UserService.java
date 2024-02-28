@@ -1,6 +1,7 @@
 package com.alisimsek.HumorousBlog.service;
 
 import com.alisimsek.HumorousBlog.dto.UserCreateDto;
+import com.alisimsek.HumorousBlog.dto.UserProjection;
 import com.alisimsek.HumorousBlog.email.EmailService;
 import com.alisimsek.HumorousBlog.entity.User;
 import com.alisimsek.HumorousBlog.exception.ActivationNotificationException;
@@ -25,8 +26,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
-    public Page<User> findAllUsers(Pageable page) {
-        return userRepository.findAll(page);
+    public Page<UserProjection> getAllUsers(Pageable page) {
+        return userRepository.getAllUserRecords(page);
     }
 
     @Transactional(rollbackOn = MailException.class )

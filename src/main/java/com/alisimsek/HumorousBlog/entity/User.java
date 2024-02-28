@@ -11,7 +11,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private String username;
 
     private String password;
@@ -21,5 +20,7 @@ public class User {
     private Boolean active = false;
 
     private String activationToken;
+
+    private String image;
 
 }

@@ -1,6 +1,7 @@
 package com.alisimsek.HumorousBlog.controller;
 
 import com.alisimsek.HumorousBlog.dto.UserCreateDto;
+import com.alisimsek.HumorousBlog.dto.UserProjection;
 import com.alisimsek.HumorousBlog.entity.User;
 import com.alisimsek.HumorousBlog.exception.ActivationNotificationException;
 import com.alisimsek.HumorousBlog.exception.ApiError;
@@ -29,8 +30,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public Page<User> findAllUsers(Pageable page){
-        return userService.findAllUsers(page);
+    public Page<UserProjection> getAllUsers(Pageable page){
+        return userService.getAllUsers(page);
     }
 
     @PostMapping

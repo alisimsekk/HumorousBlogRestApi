@@ -12,12 +12,15 @@ import com.alisimsek.HumorousBlog.shared.Messages;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -25,7 +28,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
-    //private final MessageSource messageSource;
+
+    @GetMapping
+    public Page<User> findAllUsers(Pageable page){
+        return userService.findAllUsers(page);
+    }
 
     @PostMapping
     public ResponseEntity<?> createUser (@Valid @RequestBody UserCreateDto userCreateDto){

@@ -6,6 +6,7 @@ import com.alisimsek.HumorousBlog.dto.UserResponse;
 import com.alisimsek.HumorousBlog.email.EmailService;
 import com.alisimsek.HumorousBlog.entity.User;
 import com.alisimsek.HumorousBlog.exception.ActivationNotificationException;
+import com.alisimsek.HumorousBlog.exception.EntityNotFoundException;
 import com.alisimsek.HumorousBlog.exception.InvalidTokenException;
 import com.alisimsek.HumorousBlog.exception.NotUniqueMailException;
 import com.alisimsek.HumorousBlog.repository.UserRepository;
@@ -36,6 +37,9 @@ public class UserService {
         return userRepository.getAllUserRecords(page);
     }*/
 
+    public UserResponse findByUser(Long id) {
+        return new UserResponse(userRepository.findById(id).orElseThrow(()-> new EntityNotFoundException(id,User.class)));
+    }
 
     @Transactional(rollbackOn = MailException.class )
     public User createUser(UserCreateDto userCreateDto) {

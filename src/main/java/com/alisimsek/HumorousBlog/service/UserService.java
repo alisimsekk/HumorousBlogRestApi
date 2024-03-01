@@ -1,8 +1,7 @@
 package com.alisimsek.HumorousBlog.service;
 
-import com.alisimsek.HumorousBlog.dto.UserCreateDto;
-import com.alisimsek.HumorousBlog.dto.UserProjection;
-import com.alisimsek.HumorousBlog.dto.UserResponse;
+import com.alisimsek.HumorousBlog.dto.request.UserCreateDto;
+import com.alisimsek.HumorousBlog.dto.response.UserResponse;
 import com.alisimsek.HumorousBlog.email.EmailService;
 import com.alisimsek.HumorousBlog.entity.User;
 import com.alisimsek.HumorousBlog.exception.ActivationNotificationException;
@@ -19,6 +18,7 @@ import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -39,6 +39,10 @@ public class UserService {
 
     public UserResponse findByUser(Long id) {
         return new UserResponse(userRepository.findById(id).orElseThrow(()-> new EntityNotFoundException(id,User.class)));
+    }
+
+    public Optional<User> findUserByMail(String mail) {
+        return userRepository.findByMail(mail);
     }
 
     @Transactional(rollbackOn = MailException.class )
@@ -66,4 +70,6 @@ public class UserService {
         userFromDbByToken.setActivationToken(null);
         userRepository.save(userFromDbByToken);
     }
+
+
 }

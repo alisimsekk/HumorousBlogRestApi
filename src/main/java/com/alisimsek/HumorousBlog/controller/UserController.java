@@ -1,8 +1,7 @@
 package com.alisimsek.HumorousBlog.controller;
 
-import com.alisimsek.HumorousBlog.dto.UserCreateDto;
-import com.alisimsek.HumorousBlog.dto.UserProjection;
-import com.alisimsek.HumorousBlog.dto.UserResponse;
+import com.alisimsek.HumorousBlog.dto.request.UserCreateDto;
+import com.alisimsek.HumorousBlog.dto.response.UserResponse;
 import com.alisimsek.HumorousBlog.entity.User;
 import com.alisimsek.HumorousBlog.exception.*;
 import com.alisimsek.HumorousBlog.service.UserService;

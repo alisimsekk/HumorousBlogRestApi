@@ -1,4 +1,7 @@
 package com.alisimsek.HumorousBlog.dto.request;
 
-public record Credentials(String mail, String password) {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record Credentials(@Email String mail, @NotBlank String password) {
 }

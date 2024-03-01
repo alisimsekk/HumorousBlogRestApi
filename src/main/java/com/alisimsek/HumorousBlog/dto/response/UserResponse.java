@@ -1,4 +1,4 @@
-package com.alisimsek.HumorousBlog.dto;
+package com.alisimsek.HumorousBlog.dto.response;
 
 import com.alisimsek.HumorousBlog.entity.User;
 import lombok.AllArgsConstructor;

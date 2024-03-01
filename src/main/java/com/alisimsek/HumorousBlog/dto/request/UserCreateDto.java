@@ -1,4 +1,4 @@
-package com.alisimsek.HumorousBlog.dto;
+package com.alisimsek.HumorousBlog.dto.request;
 
 import com.alisimsek.HumorousBlog.entity.User;
 import com.alisimsek.HumorousBlog.validation.UniqueMail;

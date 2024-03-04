@@ -8,6 +8,7 @@ import com.alisimsek.HumorousBlog.shared.GenericMessage;
 import com.alisimsek.HumorousBlog.shared.Messages;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,13 +18,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/user")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public Page<UserResponse> findAllUsers(Pageable page){
-        return userService.findAllUsers(page);
+    public Page<UserResponse> findAllUsers(Pageable page, @RequestHeader(name = "Authorization", required = false) String authorizationHeader){
+        return userService.findAllUsers(page, authorizationHeader);
     }
 
    /* Projection

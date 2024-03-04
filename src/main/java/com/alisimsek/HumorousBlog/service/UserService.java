@@ -10,7 +10,9 @@ import com.alisimsek.HumorousBlog.exception.InvalidTokenException;
 import com.alisimsek.HumorousBlog.exception.NotUniqueMailException;
 import com.alisimsek.HumorousBlog.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,14 +24,22 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
-    public Page<UserResponse> findAllUsers(Pageable page) {
-        return userRepository.findAll(page).map(UserResponse::new);
+    @Lazy
+    @Autowired
+    private TokenService tokenService;
+
+    public Page<UserResponse> findAllUsers(Pageable page, String authorizationHeader) {
+        var loggedInUser = tokenService.verifyToken(authorizationHeader);
+        if (loggedInUser == null){
+            return userRepository.findAll(page).map(UserResponse::new);
+        }
+        return userRepository.findByIdNot(loggedInUser.getId(), page).map(UserResponse::new);
     }
 
     /*Projection

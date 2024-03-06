@@ -1,13 +1,11 @@
 package com.alisimsek.HumorousBlog.service;
 
-import com.alisimsek.HumorousBlog.dto.request.UserCreateDto;
+import com.alisimsek.HumorousBlog.dto.request.UserCreate;
+import com.alisimsek.HumorousBlog.dto.request.UserUpdate;
 import com.alisimsek.HumorousBlog.dto.response.UserResponse;
 import com.alisimsek.HumorousBlog.email.EmailService;
 import com.alisimsek.HumorousBlog.entity.User;
-import com.alisimsek.HumorousBlog.exception.ActivationNotificationException;
-import com.alisimsek.HumorousBlog.exception.EntityNotFoundException;
-import com.alisimsek.HumorousBlog.exception.InvalidTokenException;
-import com.alisimsek.HumorousBlog.exception.NotUniqueMailException;
+import com.alisimsek.HumorousBlog.exception.*;
 import com.alisimsek.HumorousBlog.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +33,7 @@ public class UserService {
     private TokenService tokenService;
 
     public Page<UserResponse> findAllUsers(Pageable page, String authorizationHeader) {
-        var loggedInUser = tokenService.verifyToken(authorizationHeader);
+        User loggedInUser = tokenService.verifyToken(authorizationHeader);
         if (loggedInUser == null){
             return userRepository.findAll(page).map(UserResponse::new);
         }
@@ -56,8 +54,8 @@ public class UserService {
     }
 
     @Transactional(rollbackOn = MailException.class )
-    public User createUser(UserCreateDto userCreateDto) {
-        User user = userCreateDto.toUser();
+    public User createUser(UserCreate userCreate) {
+        User user = userCreate.toUser();
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setActivationToken(UUID.randomUUID().toString());
@@ -82,4 +80,16 @@ public class UserService {
     }
 
 
+    public UserResponse update(Long id, UserUpdate userUpdate, String authorizationHeader) {
+        var loggedInUser = tokenService.verifyToken(authorizationHeader);
+
+        if (loggedInUser==null || loggedInUser.getId() != id){
+            throw new AuthorizationException();
+        }
+
+        User userFromDb = userRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException(id,User.class));
+        userFromDb.setUsername(userUpdate.username());
+        return new UserResponse(userRepository.save(userFromDb));
+    }
 }

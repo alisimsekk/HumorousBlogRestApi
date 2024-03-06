@@ -1,13 +1,13 @@
 package com.alisimsek.HumorousBlog.controller;
 
-import com.alisimsek.HumorousBlog.dto.request.UserCreateDto;
+import com.alisimsek.HumorousBlog.dto.request.UserCreate;
+import com.alisimsek.HumorousBlog.dto.request.UserUpdate;
 import com.alisimsek.HumorousBlog.dto.response.UserResponse;
 import com.alisimsek.HumorousBlog.entity.User;
 import com.alisimsek.HumorousBlog.service.UserService;
 import com.alisimsek.HumorousBlog.shared.GenericMessage;
 import com.alisimsek.HumorousBlog.shared.Messages;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -39,9 +39,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser (@Valid @RequestBody UserCreateDto userCreateDto){
+    public ResponseEntity<?> createUser (@Valid @RequestBody UserCreate userCreate){
         System.err.println("----" + LocaleContextHolder.getLocale().getLanguage());
-        User createdUser = userService.createUser(userCreateDto);
+        User createdUser = userService.createUser(userCreate);
         if (createdUser !=null){
             String message = Messages.getMessageForLocale("humorous.create.user.success.message", LocaleContextHolder.getLocale());
             System.out.println(message);
@@ -57,6 +57,14 @@ public class UserController {
         userService.activateUser(token);
         String message = Messages.getMessageForLocale("humorous.activate.user.success.message",LocaleContextHolder.getLocale());
         return new GenericMessage(message);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> update (
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdate userUpdate,
+            @RequestHeader(name = "Authorization", required = false) String authorizationHeader){
+        return new ResponseEntity<>(userService.update(id,userUpdate, authorizationHeader),HttpStatus.OK);
     }
 
 }

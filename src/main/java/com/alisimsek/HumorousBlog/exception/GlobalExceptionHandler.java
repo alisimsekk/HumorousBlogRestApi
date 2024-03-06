@@ -56,6 +56,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(generateApiError(404,exception,request));
     }
 
+    @ExceptionHandler(AuthorizationException.class)
+    ResponseEntity<ApiError> handleAuthorizationException(AuthorizationException exception, HttpServletRequest request){
+        return ResponseEntity.status(403).body(generateApiError(403,exception,request));
+    }
+
     public ApiError generateApiError (int status, Exception ex, HttpServletRequest request){
         ApiError apiError = new ApiError();
         apiError.setStatusCode(status);

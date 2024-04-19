@@ -1,5 +1,6 @@
 package com.alisimsek.HumorousBlog.service;
 
+import com.alisimsek.HumorousBlog.configuration.CurrentUser;
 import com.alisimsek.HumorousBlog.dto.request.UserCreate;
 import com.alisimsek.HumorousBlog.dto.request.UserUpdate;
 import com.alisimsek.HumorousBlog.dto.response.UserResponse;
@@ -9,8 +10,6 @@ import com.alisimsek.HumorousBlog.exception.*;
 import com.alisimsek.HumorousBlog.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,22 +27,12 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
-    @Lazy
-    @Autowired
-    private TokenService tokenService;
-
-    public Page<UserResponse> findAllUsers(Pageable page, String authorizationHeader) {
-        User loggedInUser = tokenService.verifyToken(authorizationHeader);
-        if (loggedInUser == null){
+    public Page<UserResponse> findAllUsers(Pageable page, CurrentUser currentUser) {
+        if (currentUser == null){
             return userRepository.findAll(page).map(UserResponse::new);
         }
-        return userRepository.findByIdNot(loggedInUser.getId(), page).map(UserResponse::new);
+        return userRepository.findByIdNot(currentUser.getId(), page).map(UserResponse::new);
     }
-
-    /*Projection
-        public Page<UserProjection> getAllUsers(Pageable page) {
-        return userRepository.getAllUserRecords(page);
-    }*/
 
     public UserResponse findByUser(Long id) {
         return new UserResponse(userRepository.findById(id).orElseThrow(()-> new EntityNotFoundException(id,User.class)));
@@ -80,10 +69,8 @@ public class UserService {
     }
 
 
-    public UserResponse update(Long id, UserUpdate userUpdate, String authorizationHeader) {
-        var loggedInUser = tokenService.verifyToken(authorizationHeader);
-
-        if (loggedInUser==null || loggedInUser.getId() != id){
+    public UserResponse update(Long id, UserUpdate userUpdate, CurrentUser currentUser) {
+        if (currentUser.getId() != id){
             throw new AuthorizationException();
         }
 

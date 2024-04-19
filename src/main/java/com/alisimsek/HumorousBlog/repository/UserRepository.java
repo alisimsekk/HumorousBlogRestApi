@@ -14,10 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByactivationToken(String token);
 
-   /* Projection
-    @Query(value = "select u from User u")
-    Page<UserProjection> getAllUserRecords(Pageable page);*/
-
     Page<User> findByIdNot (Long id, Pageable page);
 
 }

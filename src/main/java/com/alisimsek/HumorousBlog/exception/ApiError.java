@@ -14,7 +14,7 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(value = JsonInclude.Include.NON_NULL) //response'da json a dönerken null olmayan alanları dönecek, null değerler gösterilmeyecek
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class ApiError {
     private Integer statusCode;
     private String message;

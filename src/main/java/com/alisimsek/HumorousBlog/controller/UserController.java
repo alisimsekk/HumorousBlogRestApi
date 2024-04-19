@@ -1,5 +1,6 @@
 package com.alisimsek.HumorousBlog.controller;
 
+import com.alisimsek.HumorousBlog.configuration.CurrentUser;
 import com.alisimsek.HumorousBlog.dto.request.UserCreate;
 import com.alisimsek.HumorousBlog.dto.request.UserUpdate;
 import com.alisimsek.HumorousBlog.dto.response.UserResponse;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,15 +25,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public Page<UserResponse> findAllUsers(Pageable page, @RequestHeader(name = "Authorization", required = false) String authorizationHeader){
-        return userService.findAllUsers(page, authorizationHeader);
+    public Page<UserResponse> findAllUsers(Pageable page, @AuthenticationPrincipal CurrentUser currentUser){
+        return userService.findAllUsers(page, currentUser);
     }
-
-   /* Projection
-   @GetMapping
-    public Page<UserProjection> getAllUsers(Pageable page){
-        return userService.getAllUsers(page);
-    }*/
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> findByUser(@PathVariable Long id){
@@ -63,8 +59,7 @@ public class UserController {
     public ResponseEntity<UserResponse> update (
             @PathVariable Long id,
             @Valid @RequestBody UserUpdate userUpdate,
-            @RequestHeader(name = "Authorization", required = false) String authorizationHeader){
-        return new ResponseEntity<>(userService.update(id,userUpdate, authorizationHeader),HttpStatus.OK);
+            @AuthenticationPrincipal CurrentUser currentUser){
+        return new ResponseEntity<>(userService.update(id,userUpdate, currentUser),HttpStatus.OK);
     }
-
 }

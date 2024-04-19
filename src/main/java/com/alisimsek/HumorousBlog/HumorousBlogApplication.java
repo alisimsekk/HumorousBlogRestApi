@@ -30,12 +30,6 @@ public class HumorousBlogApplication {
 					user.setActive(true);
 					userRepository.save(user);
 				}
-				User user = new User();
-				user.setUsername("user26");
-				user.setMail("user26@mail.com");
-				user.setPassword(passwordEncoder.encode("P4assword"));
-				user.setActive(false);
-				userRepository.save(user);
 			}
 		};
 

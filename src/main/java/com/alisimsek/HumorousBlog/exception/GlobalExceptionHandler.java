@@ -3,7 +3,6 @@ package com.alisimsek.HumorousBlog.exception;
 import com.alisimsek.HumorousBlog.shared.Messages;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -56,10 +55,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(generateApiError(404,exception,request));
     }
 
-    @ExceptionHandler(AuthorizationException.class)
-    ResponseEntity<ApiError> handleAuthorizationException(AuthorizationException exception, HttpServletRequest request){
-        return ResponseEntity.status(403).body(generateApiError(403,exception,request));
-    }
 
     public ApiError generateApiError (int status, Exception ex, HttpServletRequest request){
         ApiError apiError = new ApiError();

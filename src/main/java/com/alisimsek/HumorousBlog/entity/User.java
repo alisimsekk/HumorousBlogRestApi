@@ -17,7 +17,7 @@ public class User {
 
     private String mail;
 
-    private Boolean active = false;
+    private boolean active = false;
 
     private String activationToken;
 

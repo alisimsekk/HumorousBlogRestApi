@@ -4,6 +4,8 @@ import com.alisimsek.HumorousBlog.shared.Messages;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -55,6 +57,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(generateApiError(404,exception,request));
     }
 
+    //security exceptions
+    @ExceptionHandler({DisabledException.class, AccessDeniedException.class})
+    ResponseEntity<?> handleDisabledException(Exception exception, HttpServletRequest request){
+        int status = 0;
+        if (exception instanceof DisabledException){
+            status = 401;
+        } else if (exception instanceof AccessDeniedException){
+            status = 403;
+        }
+        return ResponseEntity.status(status).body(generateApiError(status,exception,request));
+    }
 
     public ApiError generateApiError (int status, Exception ex, HttpServletRequest request){
         ApiError apiError = new ApiError();

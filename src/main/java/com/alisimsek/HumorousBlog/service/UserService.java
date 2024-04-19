@@ -70,10 +70,6 @@ public class UserService {
 
 
     public UserResponse update(Long id, UserUpdate userUpdate, CurrentUser currentUser) {
-        if (currentUser.getId() != id){
-            throw new AuthorizationException();
-        }
-
         User userFromDb = userRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException(id,User.class));
         userFromDb.setUsername(userUpdate.username());

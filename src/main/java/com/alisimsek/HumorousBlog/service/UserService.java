@@ -69,7 +69,7 @@ public class UserService {
     }
 
 
-    public UserResponse update(Long id, UserUpdate userUpdate, CurrentUser currentUser) {
+    public UserResponse update(Long id, UserUpdate userUpdate) {
         User userFromDb = userRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException(id,User.class));
         userFromDb.setUsername(userUpdate.username());

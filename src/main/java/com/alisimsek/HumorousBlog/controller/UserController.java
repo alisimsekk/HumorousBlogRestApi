@@ -57,11 +57,10 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("#id == #currentUser.id")
+    @PreAuthorize("#id == principal.id")
     public ResponseEntity<UserResponse> update (
             @PathVariable Long id,
-            @Valid @RequestBody UserUpdate userUpdate,
-            @AuthenticationPrincipal CurrentUser currentUser){
-        return new ResponseEntity<>(userService.update(id,userUpdate, currentUser),HttpStatus.OK);
+            @Valid @RequestBody UserUpdate userUpdate){
+        return new ResponseEntity<>(userService.update(id,userUpdate),HttpStatus.OK);
     }
 }

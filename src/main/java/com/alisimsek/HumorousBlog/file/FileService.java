@@ -2,6 +2,7 @@ package com.alisimsek.HumorousBlog.file;
 
 import com.alisimsek.HumorousBlog.configuration.HumorousProperties;
 import lombok.RequiredArgsConstructor;
+import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -14,7 +15,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FileService {
 
-    public final HumorousProperties humorousProperties;
+    private final HumorousProperties humorousProperties;
+    private Tika tika = new Tika();
+
     public String saveBase64ImageStringAsFile(String image) {
         String fileName = UUID.randomUUID().toString();
 
@@ -22,7 +25,7 @@ public class FileService {
 
         try {
             OutputStream outputStream = new FileOutputStream(path.toFile());
-            byte [] base64decoded = Base64.getDecoder().decode(image.split(",")[1]);
+            byte [] base64decoded = decodedImage(image);
             outputStream.write(base64decoded);
             outputStream.close();
             return fileName;
@@ -30,5 +33,14 @@ public class FileService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String detectDocumentType(String value) {
+        String documentType = tika.detect(decodedImage(value));
+        return documentType;
+    }
+
+    public byte[] decodedImage(String encodedImage){
+        return Base64.getDecoder().decode(encodedImage.split(",")[1]);
     }
 }

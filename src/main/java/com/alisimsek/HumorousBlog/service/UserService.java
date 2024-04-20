@@ -7,6 +7,7 @@ import com.alisimsek.HumorousBlog.dto.response.UserResponse;
 import com.alisimsek.HumorousBlog.email.EmailService;
 import com.alisimsek.HumorousBlog.entity.User;
 import com.alisimsek.HumorousBlog.exception.*;
+import com.alisimsek.HumorousBlog.file.FileService;
 import com.alisimsek.HumorousBlog.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final FileService fileService;
 
     public Page<UserResponse> findAllUsers(Pageable page, CurrentUser currentUser) {
         if (currentUser == null){
@@ -68,11 +70,14 @@ public class UserService {
         userRepository.save(userFromDbByToken);
     }
 
-
     public UserResponse update(Long id, UserUpdate userUpdate) {
         User userFromDb = userRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException(id,User.class));
         userFromDb.setUsername(userUpdate.username());
+        if (userUpdate.image() != null){
+            String fileName = fileService.saveBase64ImageStringAsFile(userUpdate.image());
+            userFromDb.setImage(fileName);
+        }
         return new UserResponse(userRepository.save(userFromDb));
     }
 }

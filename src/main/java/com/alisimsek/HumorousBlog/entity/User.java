@@ -21,6 +21,7 @@ public class User {
 
     private String activationToken;
 
+    @Lob
     private String image;
 
 }

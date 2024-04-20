@@ -76,6 +76,7 @@ public class UserService {
         userFromDb.setUsername(userUpdate.username());
         if (userUpdate.image() != null){
             String fileName = fileService.saveBase64ImageStringAsFile(userUpdate.image());
+            fileService.deleteProfileImage(userFromDb.getImage());
             userFromDb.setImage(fileName);
         }
         return new UserResponse(userRepository.save(userFromDb));

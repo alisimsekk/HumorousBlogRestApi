@@ -6,6 +6,7 @@ import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
@@ -21,7 +22,7 @@ public class FileService {
     public String saveBase64ImageStringAsFile(String image) {
         String fileName = UUID.randomUUID().toString();
 
-        Path path = Paths.get(humorousProperties.getStorage().getRoot(),humorousProperties.getStorage().getProfile(), fileName);
+        Path path = getProfileImagePath(fileName);
 
         try {
             OutputStream outputStream = new FileOutputStream(path.toFile());
@@ -42,5 +43,19 @@ public class FileService {
 
     public byte[] decodedImage(String encodedImage){
         return Base64.getDecoder().decode(encodedImage.split(",")[1]);
+    }
+
+    public void deleteProfileImage(String image) {
+        if (image == null) return;
+        Path path = getProfileImagePath(image);
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Path getProfileImagePath(String fileName){
+        return Paths.get(humorousProperties.getStorage().getRoot(),humorousProperties.getStorage().getProfile(), fileName);
     }
 }
